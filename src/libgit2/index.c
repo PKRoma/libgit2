@@ -1448,7 +1448,7 @@ out:
 	return error;
 }
 
-static int index_conflict_to_reuc(git_index *index, const char *path)
+int git_index__conflict_to_reuc(git_index *index, const char *path)
 {
 	const git_index_entry *conflict_entries[3];
 	int ancestor_mode, our_mode, their_mode;
@@ -1528,7 +1528,7 @@ int git_index_add_from_buffer(
 		return error;
 
 	/* Adding implies conflict was resolved, move conflict entries to REUC */
-	if ((error = index_conflict_to_reuc(index, entry->path)) < 0 && error != GIT_ENOTFOUND)
+	if ((error = git_index__conflict_to_reuc(index, entry->path)) < 0 && error != GIT_ENOTFOUND)
 		return error;
 
 	git_tree_cache_invalidate_path(index->tree, entry->path);
@@ -1624,7 +1624,7 @@ int git_index_add_bypath(git_index *index, const char *path)
 	}
 
 	/* Adding implies conflict was resolved, move conflict entries to REUC */
-	if ((ret = index_conflict_to_reuc(index, path)) < 0 && ret != GIT_ENOTFOUND)
+	if ((ret = git_index__conflict_to_reuc(index, path)) < 0 && ret != GIT_ENOTFOUND)
 		return ret;
 
 	git_tree_cache_invalidate_path(index->tree, entry->path);
@@ -1640,7 +1640,7 @@ int git_index_remove_bypath(git_index *index, const char *path)
 
 	if (((ret = git_index_remove(index, path, 0)) < 0 &&
 		ret != GIT_ENOTFOUND) ||
-		((ret = index_conflict_to_reuc(index, path)) < 0 &&
+		((ret = git_index__conflict_to_reuc(index, path)) < 0 &&
 		ret != GIT_ENOTFOUND))
 		return ret;
 
