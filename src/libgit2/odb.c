@@ -1533,6 +1533,7 @@ int git_odb_stream_finalize_write(git_oid *out, git_odb_stream *stream)
 		return git_odb_stream__invalid_length(stream,
 			"stream_finalize_write()");
 
+	memset(out, 0, sizeof(git_oid));
 	git_hash_final(out->id, stream->hash_ctx);
 
 #ifdef GIT_EXPERIMENTAL_SHA256

@@ -700,6 +700,7 @@ static int id_from_fd(
 		goto done;
 	}
 
+	memset(out, 0, sizeof(git_oid));
 	error = git_hash_final(out->id, &ctx);
 
 #ifdef GIT_EXPERIMENTAL_SHA256
@@ -864,6 +865,8 @@ static int id_from_buffer(
 	vec[0].len = hdrlen;
 	vec[1].data = (void *)data;
 	vec[1].len = len;
+
+	memset(id, 0, sizeof(git_oid));
 
 #ifdef GIT_EXPERIMENTAL_SHA256
 	id->type = opts->oid_type;
