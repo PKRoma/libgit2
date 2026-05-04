@@ -50,7 +50,7 @@ target_include_directories(libgit2_tests PRIVATE ${TEST_INCLUDES} ${LIBGIT2_INCL
 target_include_directories(libgit2_tests SYSTEM PRIVATE ${LIBGIT2_SYSTEM_INCLUDES})
 
 target_link_libraries(libgit2_tests ${LIBGIT2_SYSTEM_LIBS})
-if(NOT MSVC_IDE)
+if(NOT MSVC)
 	target_link_libraries(libgit2_tests m)
 endif()
 

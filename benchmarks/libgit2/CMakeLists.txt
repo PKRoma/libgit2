@@ -48,7 +48,7 @@ add_executable(libgit2_benchmarks ${CLAR_SRC}
 	${LIBGIT2_DEPENDENCY_OBJECTS})
 
 target_link_libraries(libgit2_benchmarks libgit2package ${LIBGIT2_SYSTEM_LIBS})
-if(NOT MSVC_IDE)
+if(NOT MSVC)
 	target_link_libraries(libgit2_benchmarks m)
 endif()
 
