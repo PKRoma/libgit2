@@ -1243,13 +1243,16 @@ GIT_INLINE(int) client_read_and_parse(git_http_client *client)
 }
 
 /*
- * See if we've consumed the entire response body.  If the client was
- * reading the body but did not consume it entirely, it's possible that
- * they knew that the stream had finished (in a git response, seeing a
- * final flush) and stopped reading.  But if the response was chunked,
- * we may have not consumed the final chunk marker.  Consume it to
- * ensure that we don't have it waiting in our socket.  If there's
- * more than just a chunk marker, close the connection.
+ * Try to consume any remaining response body. The client may have
+ * decided that it did not need to consume the entire response body.
+ * For example, the client saw a redirect in the header and ignored
+ * the body. Or the client saw a particular sequence (like a final
+ * flush in a git response) and stopped reading (but there were
+ * additional response bytes, perhaps because the response was chunked).
+ * Do one more read to try to clear this out; this takes care of small
+ * remainders, like a chunk response or a small redirect message. If
+ * there is too much data, we'll just leave it and close the
+ * connection.
  */
 static void complete_response_body(git_http_client *client)
 {
