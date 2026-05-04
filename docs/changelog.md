@@ -4,6 +4,18 @@ v1.9.3
 This release includes a number of bugfixes and compatibility
 improvements, particularly around SHA256 support.
 
+* cmake: fix linker error when using ninja build generator by
+  @kcsaul in https://github.com/libgit2/libgit2/pull/7249
+* Handle redirects with Content-Length: 0 correctly by
+  @ethomson in https://github.com/libgit2/libgit2/pull/7246
+* ci: use poxygit v0.8.1 in the tests by @ethomson in
+  https://github.com/libgit2/libgit2/pull/7248
+* Zero indexer stats in pack objects by @ethomson in
+  https://github.com/libgit2/libgit2/pull/7243
+* submodule: git_index_add_bypath does not move conflict entries
+  to REUC by @lrm29 in https://github.com/libgit2/libgit2/pull/7003
+* fix: prevent SSH timeout infinite loop and enable TCP keepalive
+  by @ambv in https://github.com/libgit2/libgit2/pull/7165
 * merge_files: avoid UB in xdiff by @ethomson in
   https://github.com/libgit2/libgit2/pull/7239
 * git_merge_file_from_index: handle cases when a child (ours or
