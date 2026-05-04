@@ -379,7 +379,7 @@ static int on_headers_complete(git_http_parser *parser)
 	ctx->response->resend_credentials = resend_needed(ctx->client,
 	                                                  ctx->response);
 
-	if (ctx->response->content_type || ctx->response->chunked)
+	if (ctx->response->content_length || ctx->response->chunked)
 		ctx->client->state = READING_BODY;
 	else
 		ctx->client->state = DONE;
