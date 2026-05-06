@@ -956,6 +956,11 @@ int git_revparse(
 				&revspec->to,
 				repo,
 				*rstr == '\0' ? "HEAD" : rstr);
+
+			if (error < 0) {
+				git_object_free(revspec->from);
+				revspec->from = NULL;
+			}
 		}
 
 		git__free((void*)lstr);
