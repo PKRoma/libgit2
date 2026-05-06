@@ -439,7 +439,13 @@ static int load_known_hosts(LIBSSH2_KNOWNHOSTS **hosts, LIBSSH2_SESSION *session
 
 	GIT_ASSERT_ARG(hosts);
 
-        git_sysdir_expand_homedir_file(&sshdir, SSH_DIR);
+	if ((error = git_sysdir_expand_homedir_file(&sshdir, SSH_DIR)) < 0) {
+		if (error == GIT_ENOTFOUND)
+			error = 0;
+
+		goto out;
+	}
+
         if ((error = git_str_joinpath(&path, git_str_cstr(&sshdir), KNOWN_HOSTS_FILE)) < 0)
 		goto out;
 
