@@ -41,12 +41,11 @@ ide_split_sources(libgit2)
 list(APPEND LIBGIT2_OBJECTS $<TARGET_OBJECTS:util> $<TARGET_OBJECTS:libgit2> ${LIBGIT2_DEPENDENCY_OBJECTS})
 list(APPEND LIBGIT2_INCLUDES ${LIBGIT2_DEPENDENCY_INCLUDES})
 
-# Build should look at headers in source tree but installed target should point to the possibly mutated
-# includes which will be generated
-target_include_directories(libgit2 PRIVATE ${LIBGIT2_INCLUDES} ${LIBGIT2_DEPENDENCY_INCLUDES}
-		PUBLIC
-		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-		$<INSTALL_INTERFACE:include>)
+target_include_directories(libgit2
+	PRIVATE ${LIBGIT2_INCLUDES} ${LIBGIT2_DEPENDENCY_INCLUDES}
+	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:include>)
+
 target_include_directories(libgit2 SYSTEM PRIVATE ${LIBGIT2_SYSTEM_INCLUDES})
 
 set(LIBGIT2_INCLUDES ${LIBGIT2_INCLUDES} PARENT_SCOPE)
@@ -99,24 +98,21 @@ endif()
 
 # support experimental features and functionality
 
-configure_file(experimental.h.in "${PROJECT_BINARY_DIR}/include/git2/experimental.h")
+configure_file(experimental.h.in "${PROJECT_BINARY_DIR}/include/${LIBGIT2_FILENAME}/experimental.h")
 
 # translate filenames in the headers so that they match the install directory
 # (allows for side-by-side installs of libgit2 and libgit2-experimental.)
 
 foreach(HEADER_SOURCE ${SRC_H})
-  # Compute desired path in the binary dir
-  FILE(RELATIVE_PATH HEADER_RELATIVE ${PROJECT_SOURCE_DIR} ${HEADER_SOURCE})
-  STRING(REPLACE "git2/" "git2-experimental/" HEADER_RELATIVE ${HEADER_RELATIVE})
-  SET(HEADER_OUT ${PROJECT_BINARY_DIR}/${HEADER_RELATIVE})
+	file(RELATIVE_PATH HEADER_RELATIVE ${PROJECT_SOURCE_DIR} ${HEADER_SOURCE})
+	string(REGEX REPLACE "^include\/git2" "include/${LIBGIT2_FILENAME}" HEADER_RELATIVE ${HEADER_RELATIVE})
 
-  FILE(READ "${HEADER_SOURCE}" HEADER_CONTENTS)
-  STRING(REGEX REPLACE "#include \"git2\/" "#include \"${LIBGIT2_FILENAME}/" HEADER_CONTENTS "${HEADER_CONTENTS}")
-  FILE(WRITE "${HEADER_OUT}" "${HEADER_CONTENTS}")
+	file(READ "${HEADER_SOURCE}" HEADER_CONTENTS)
+	string(REGEX REPLACE "#include \"git2\/" "#include \"${LIBGIT2_FILENAME}/" HEADER_CONTENTS "${HEADER_CONTENTS}")
+
+	file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/${HEADER_RELATIVE}.tmp" "${HEADER_CONTENTS}")
+	configure_file("${CMAKE_CURRENT_BINARY_DIR}/${HEADER_RELATIVE}.tmp" "${PROJECT_BINARY_DIR}/${HEADER_RELATIVE}" COPYONLY)
 endforeach()
-
-# Rename git2.h after the regex & move
-FILE(RENAME "${PROJECT_BINARY_DIR}/include/git2.h" "${PROJECT_BINARY_DIR}/include/${LIBGIT2_FILENAME}.h")
 
 # cmake package targets
 
@@ -147,7 +143,7 @@ install(TARGETS libgit2package
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(DIRECTORY ${PROJECT_BINARY_DIR}/include/${LIBGIT2_FILENAME}/
-        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBGIT2_FILENAME}")
 install(FILES "${PROJECT_BINARY_DIR}/include/${LIBGIT2_FILENAME}.h"
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY "${PROJECT_BINARY_DIR}/include/${LIBGIT2_FILENAME}"
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
