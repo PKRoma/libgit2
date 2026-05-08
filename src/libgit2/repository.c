@@ -1907,6 +1907,7 @@ static const char *builtin_extensions[] = {
 	"worktreeconfig",
 	"preciousobjects",
 	"refstorage",
+	"relativeworktrees",
 };
 
 static git_vector user_extensions = { 0, git__strcmp_cb };
