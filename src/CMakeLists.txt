@@ -59,6 +59,10 @@ if(HAVE_FUTIMENS)
 	set(GIT_FUTIMENS 1)
 endif()
 
+# large file support
+
+add_definitions(-D_FILE_OFFSET_BITS=64)
+
 # qsort
 
 # old-style FreeBSD qsort_r() has the 'context' parameter as the first argument
