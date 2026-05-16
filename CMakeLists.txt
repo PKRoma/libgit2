@@ -20,7 +20,8 @@ option(EXPERIMENTAL_SHA256     "Enable experimental SHA256 support (for R&D/test
 
 # Optional subsystems
 option(BUILD_SHARED_LIBS       "Build Shared Library (OFF for Static)"                  ON)
-option(BUILD_TESTS             "Build Tests using the Clar suite"                       ON)
+option(BUILD_TESTS             "Build the test suite"                                   ON)
+option(BUILD_BENCHMARKS        "Build the benchmark suite"                             OFF)
 option(BUILD_CLI               "Build the command-line interface"                       ON)
 option(BUILD_EXAMPLES          "Build library usage example apps"                      OFF)
 option(BUILD_FUZZERS           "Build the fuzz targets"                                OFF)
@@ -77,7 +78,7 @@ if(MSVC)
 endif()
 
 if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
 
 
@@ -110,6 +111,10 @@ add_subdirectory(src)
 if(BUILD_TESTS)
 	enable_testing()
 	add_subdirectory(tests)
+endif()
+
+if(BUILD_BENCHMARKS)
+	add_subdirectory(benchmarks)
 endif()
 
 if(BUILD_EXAMPLES)
