@@ -8,14 +8,12 @@ list(SORT SRC_REFTABLE)
 set_property(TARGET reftable PROPERTY C_STANDARD 99)
 target_sources(reftable PRIVATE ${SRC_REFTABLE})
 target_include_directories(reftable PRIVATE
-	include
-	"${PROJECT_BINARY_DIR}/src/util"
-	"${PROJECT_BINARY_DIR}/include"
+	"include"
 	"${PROJECT_SOURCE_DIR}/src/util"
 	"${PROJECT_SOURCE_DIR}/include"
+	"${PROJECT_BINARY_DIR}/gen_headers"
 	${LIBGIT2_DEPENDENCY_INCLUDES}
-	${LIBGIT2_SYSTEM_INCLUDES}
-)
+	${LIBGIT2_SYSTEM_INCLUDES})
 
 # The reftable library is not warning-free, so we disable turning warnings into
 # errors.
